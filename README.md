@@ -21,9 +21,19 @@ Lumina, update checks or cloud decompilers.
 # flake.nix
 inputs.ida.url = "git+ssh://forgejo@10.66.0.2/gweej/ida.nix.git";
 
-# configuration.nix
+# NixOS configuration (the only system-level requirement)
 programs.nix-ld.enable = true;
-environment.systemPackages = [ inputs.ida.packages.x86_64-linux.default ];
+
+# home-manager configuration
+imports = [ inputs.ida.homeModules.default ];
+programs.ida = {
+  enable = true;
+  idaDir = "/home/me/ida-pro-9.2";              # default: auto-detect (no desktop icon)
+  python = pkgs.python313;                      # default: python314
+  extraPythonPackages = ps: [ ps.capstone ];    # for IDAPython plugins
+  extraLibs = [ pkgs.libsecret ];               # missing .so files
+  desktopEntry = true;                          # default
+};
 ```
 
 Then run `ida-pyswitch` once.
@@ -31,18 +41,14 @@ Then run `ida-pyswitch` once.
 To use idalib, add `idapro` to your project's venv (e.g. `uv add` from
 `$IDADIR/idalib/python`) and run scripts through `ida-env python ...`.
 
-## Configuration
-
-Override the package:
+Without home-manager, use the package directly. It accepts the same options
+through `.override`, except that `python` is called `idaPython`:
 
 ```nix
-inputs.ida.packages.x86_64-linux.default.override {
-  idaDir = "/opt/ida-pro-9.2";                  # default: auto-detect
-  idaPython = pkgs.python313;                   # default: python314
-  extraPythonPackages = ps: [ ps.capstone ];    # for IDAPython plugins
-  extraLibs = [ pkgs.libsecret ];               # missing .so files
-}
+inputs.ida.packages.x86_64-linux.default.override { idaDir = "/opt/ida-pro-9.2"; }
 ```
+
+## Configuration
 
 Environment variables:
 

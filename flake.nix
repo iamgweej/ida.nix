@@ -29,6 +29,8 @@
         ida-wrapped = final.callPackage ./package.nix { };
       };
 
+      homeModules.default = ./hm-module.nix;
+
       apps = forAllSystems (
         pkgs:
         let
