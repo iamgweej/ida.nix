@@ -19,7 +19,7 @@ Lumina, update checks or cloud decompilers.
 
 ```nix
 # flake.nix
-inputs.ida.url = "github:<you>/ida.nix";
+inputs.ida.url = "git+ssh://forgejo@10.66.0.2/gweej/ida.nix.git";
 
 # configuration.nix
 programs.nix-ld.enable = true;
